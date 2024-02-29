@@ -82,7 +82,7 @@ def dradon(image, out_shape=None):
     return radon_image, shift_step
 
 
-def get_lines_from_radon_image(radon_image, shift_step, threshold=0.9):
+def get_lines_from_radon_image(radon_image, shift_step, threshold=0.8):
     if not isinstance(radon_image, np.ndarray):
         raise TypeError('radon_image must be a numpy ndarray')
     if radon_image.ndim != 2:
@@ -105,4 +105,12 @@ def draw_lines(image, lines):
         raise TypeError('image must be a numpy ndarray')
     if image.ndim != 2:
         raise ValueError('The input image must be 2-D')
-    return image  # TODO: implement
+
+    h, w = image.shape
+    marked_image = np.dstack([image] * 3)
+
+    for line in lines:
+        for i, j in line.points(h, w):
+            marked_image[i, j] = [255, 0, 0]
+
+    return marked_image
