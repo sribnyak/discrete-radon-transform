@@ -1,27 +1,97 @@
+from dataclasses import dataclass
 import numpy as np
+
+
+@dataclass
+class Line:
+    angle: float
+    shift: float
+
+    # eq: shift = x cos(angle) + y sin(angle)
+    # x = j - w // 2
+    # y = h // 2 - i
+
+    def points(self, h, w):
+        if np.pi / 4 < self.angle < 3 * np.pi / 4:
+            # iterate over x, compute y
+            k = - 1 / np.tan(self.angle)
+            b = self.shift / np.sin(self.angle)
+            for j in range(w):
+                x = j - w // 2
+                y = round(k * x + b)
+                i = h // 2 - y
+                if 0 <= i < h:
+                    yield i, j
+        else:
+            # iterate over y, compute x
+            k = - np.tan(self.angle)
+            b = self.shift / np.cos(self.angle)
+            for i in range(h):
+                y = h // 2 - i
+                x = round(k * y + b)
+                j = x + w // 2
+                if 0 <= j < w:
+                    yield i, j
 
 
 def dradon(image, out_shape=None):
     if not isinstance(image, np.ndarray):
-        raise TypeError(f'image must be a numpy ndarray')
+        raise TypeError('image must be a numpy ndarray')
     if image.ndim != 2:
-        raise ValueError(f'The input image must be 2-D')
-    if not out_shape:
-        out_shape = image.shape  # TODO: implement optimal choice
-    return np.zeros(out_shape)  # TODO: implement
+        raise ValueError('The input image must be 2-D')
+
+    h, w = image.shape
+    diag = np.sqrt(h * h + w * w)
+
+    if out_shape is not None:
+        if not isinstance(out_shape, tuple):
+            raise TypeError('out_shape must be a tuple or None')
+        if len(out_shape) != 2:
+            raise ValueError('out_shape must be a tuple of 2 ints')
+
+        out_h, out_w = out_shape
+
+        if not isinstance(out_h, int) or not isinstance(out_w, int):
+            raise ValueError('out_shape must be a tuple of 2 ints')
+
+    else:  # if out_shape is None
+        out_h = out_w = round(diag)
+        out_shape = (out_h, out_w)
+
+    radon_image = np.zeros(out_shape)
+
+    angle_step = np.pi / out_h
+    shift_step = diag / out_w
+
+    print('Calculating DRT: iteration', end=' ')
+    for a in range(out_h):
+        print(a, end=' ', flush=True)
+        for s in range(out_w):
+            line = Line(a * angle_step, (s - out_w // 2) * shift_step)
+            radon_image[a, s] = 0
+            for i, j in line.points(h, w):
+                radon_image[a, s] += image[i, j]
+    print('Done')
+
+    # normalization for proper visualization
+    max_val = radon_image.max()
+    if max_val > 0:
+        radon_image /= max_val
+
+    return radon_image, shift_step
 
 
-def get_lines_from_radon_image(radon_image):
+def get_lines_from_radon_image(radon_image, shift_step):
     if not isinstance(radon_image, np.ndarray):
-        raise TypeError(f'radon_image must be a numpy ndarray')
+        raise TypeError('radon_image must be a numpy ndarray')
     if radon_image.ndim != 2:
-        raise ValueError(f'radon_image must be 2-D')
+        raise ValueError('radon_image must be 2-D')
     return []  # TODO: implement
 
 
 def draw_lines(image, lines):
     if not isinstance(image, np.ndarray):
-        raise TypeError(f'image must be a numpy ndarray')
+        raise TypeError('image must be a numpy ndarray')
     if image.ndim != 2:
-        raise ValueError(f'The input image must be 2-D')
+        raise ValueError('The input image must be 2-D')
     return image  # TODO: implement
