@@ -62,6 +62,7 @@ def dradon(image, out_shape=None):
 
     angle_step = np.pi / out_h
     shift_step = diag / out_w
+    # angle in [0, pi), shift in [-diag/2, diag/2]
 
     print('Calculating DRT: iteration', end=' ')
     for a in range(out_h):
@@ -81,12 +82,22 @@ def dradon(image, out_shape=None):
     return radon_image, shift_step
 
 
-def get_lines_from_radon_image(radon_image, shift_step):
+def get_lines_from_radon_image(radon_image, shift_step, threshold=0.9):
     if not isinstance(radon_image, np.ndarray):
         raise TypeError('radon_image must be a numpy ndarray')
     if radon_image.ndim != 2:
         raise ValueError('radon_image must be 2-D')
-    return []  # TODO: implement
+
+    lines = []
+
+    h, w = radon_image.shape
+    angle_step = np.pi / h
+    for a in range(h):
+        for s in range(w):
+            if radon_image[a, s] >= threshold:
+                lines.append(Line(a * angle_step, (s - w // 2) * shift_step))
+
+    return lines
 
 
 def draw_lines(image, lines):
