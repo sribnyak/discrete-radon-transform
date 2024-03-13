@@ -3,7 +3,7 @@ import cv2
 import random
 from dradon import dradon, get_lines_from_radon_image, draw_lines
 
-random.seed(42)
+# random.seed(42)
 
 
 # создает изображение заданного размера с белыми линиями на черном фоне
@@ -130,7 +130,7 @@ if __name__ == "__main__":
         print("----------------------------------------------------------")
 
         horizontal_lines = lines(image_size, num_lines, "horizontal")
-        selected_horizontal_lines = random.sample(horizontal_lines, 3)
+        selected_horizontal_lines = random.sample(horizontal_lines, random.randint(num_lines))
         image = create_image(image_size, selected_horizontal_lines)
         # cv2.imwrite(f'horizontal_{i}.png', image)
         test(image, selected_horizontal_lines, f"horizontal_{i}")
@@ -138,7 +138,7 @@ if __name__ == "__main__":
         print("----------------------------------------------------------")
 
         vertical_lines = lines(image_size, 5, "vertical")
-        selected_vertical_lines = random.sample(vertical_lines, 3)
+        selected_vertical_lines = random.sample(vertical_lines, random.randint(num_lines))
         image = create_image(image_size, selected_vertical_lines)
         # cv2.imwrite(f'vertical_{i}.png', image)
         test(image, selected_vertical_lines, f"vertical_{i}")
@@ -146,7 +146,7 @@ if __name__ == "__main__":
         print("----------------------------------------------------------")
 
         diagonal_lines = lines(image_size, 5, "diagonal")
-        selected_diagonal_lines = random.sample(diagonal_lines, 3)
+        selected_diagonal_lines = random.sample(diagonal_lines, random.randint(num_lines))
         image = create_image(image_size, selected_diagonal_lines)
         # cv2.imwrite(f'diagonal_{i}.png', image)
         test(image, selected_diagonal_lines, f"diagonal_{i}")
