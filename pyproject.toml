@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "dradon"
+version = "0.1.0"
+description = "Discrete Radon Transform for Line Detection"
+authors = ["Alexander Sribnyak <alexandersribnyak@gmail.com>"]
+readme = "README.md"
+license = "MIT"
+homepage = "https://github.com/sribnyak/discrete-radon-transform"
+repository = "https://github.com/sribnyak/discrete-radon-transform"
+keywords = ["radon transform", "image processing"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
