@@ -18,6 +18,9 @@ opencv-python = "^4.9.0.80"
 [tool.poetry.scripts]
 dradon = "dradon.console:main"
 
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
