@@ -1,6 +1,8 @@
 # .flake8
 [flake8]
-select = C,E,F,W
+select = C,E,F,I,W
 max-complexity = 12
 max-line-length = 120
 ignore = F401
+application-import-names = dradon,tests
+import-order-style = google

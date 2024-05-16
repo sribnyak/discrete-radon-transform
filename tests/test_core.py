@@ -1,12 +1,13 @@
-import numpy as np
-import cv2
 import random
-from dradon import dradon, get_lines_from_radon_image
 
+import cv2
+import numpy as np
 import pytest
 
-# random.seed(42)
+from dradon import dradon, get_lines_from_radon_image
 
+
+# random.seed(42)
 
 # создает изображение заданного размера с белыми линиями на черном фоне
 def create_image(image_size, lines):
