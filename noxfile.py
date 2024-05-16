@@ -8,16 +8,16 @@ locations = "src", "tests", "./noxfile.py"
 
 
 def install_with_constraints(session, *args, **kwargs):
-    with tempfile.NamedTemporaryFile() as requirements:
+    with tempfile.NamedTemporaryFile() as constraints:
         session.run(
             "poetry",
             "export",
             "--dev",
-            "--format=requirements.txt",
-            f"--output={requirements.name}",
+            "--format=constraints.txt",
+            f"--output={constraints.name}",
             external=True,
         )
-        session.install(f"--constraint={requirements.name}", *args, **kwargs)
+        session.install(f"--constraint={constraints.name}", *args, **kwargs)
 
 
 @nox.session(python="3.9")
