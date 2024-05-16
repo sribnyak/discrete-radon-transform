@@ -9,6 +9,7 @@ from dradon import dradon, get_lines_from_radon_image
 
 # random.seed(42)
 
+
 # создает изображение заданного размера с белыми линиями на черном фоне
 def create_image(image_size, lines):
     image = np.zeros((image_size[1], image_size[0]), dtype=np.uint8)
@@ -21,8 +22,11 @@ def create_image(image_size, lines):
 def get_points(line, h, w):
     points = set()
     for i, j in line.points(w, h):
-        points.add((j, i))  # тут какой-то ужас, я так и не разобрался, но вроде работает (где-то первая координата
-        # это ширина, вторая высота, где-то наоборот, методом проб и ошибок это работает
+        # тут какой-то ужас, я так и не разобрался, но вроде работает
+        # (где-то первая координата)
+        points.add((j, i))
+        # это ширина, вторая высота, где-то наоборот,
+        # методом проб и ошибок это работает
     return points
 
 
@@ -30,7 +34,8 @@ def are_similar_points(point1, point2):
     x1, y1 = point1[0], point1[1]
     x2, y2 = point2[0], point2[1]
 
-    return max(abs(x1 - x2), abs(y1 - y2)) <= 3  # я решил что это достаточно логичное требование на близость точек
+    # я решил что это достаточно логичное требование на близость точек
+    return max(abs(x1 - x2), abs(y1 - y2)) <= 3
 
 
 # Проверяю, лежит ли точка в списке точек
@@ -41,8 +46,9 @@ def is_in_points(point1, points):
     return False
 
 
-# Проверяем линии на "похожесть" т.к. обычную линию мы задаем парой точек, а с line из преобразования радона
-# я не стал разбираться как она задается, я просто смотрю, лежат ли точки из true_line примерно там же, где и line
+# Проверяем линии на "похожесть" т.к. обычную линию мы задаем парой точек,
+# а с line из преобразования радона я не стал разбираться как она задается,
+# я просто смотрю, лежат ли точки из true_line примерно там же, где и line
 def are_similar_lines(true_line, line, h, w):
     points = get_points(line, h, w)
     for point in true_line:
@@ -51,8 +57,8 @@ def are_similar_lines(true_line, line, h, w):
     return True
 
 
-# true_line и line совершенно по-разному заданные прямые, поэтому я пытаюсь понять лежит ли true_line где-то среди
-# lines таким непонятным образом
+# true_line и line совершенно по-разному заданные прямые, поэтому я пытаюсь
+# понять лежит ли true_line где-то среди lines таким непонятным образом
 def isin_true_line_lines(true_line, lines, h, w):
     for line in lines:
         if are_similar_lines(true_line, line, h, w):
@@ -60,8 +66,8 @@ def isin_true_line_lines(true_line, lines, h, w):
     return False
 
 
-# true_line и line совершенно по-разному заданные прямые, поэтому я пытаюсь понять лежит ли line где-то среди
-# true_lines таким непонятным образом
+# true_line и line совершенно по-разному заданные прямые, поэтому я пытаюсь
+# понять лежит ли line где-то среди true_lines таким непонятным образом
 def isin_line_true_lines(line, true_lines, h, w):
     for true_line in true_lines:
         if are_similar_lines(true_line, line, h, w):
@@ -88,7 +94,7 @@ def lines(image_size, num_lines, type):
             lines.append(((x, 0), (x, image_size[1])))
 
     if type == "diagonal":
-        for i in range(num_lines):
+        for _ in range(num_lines):
             h0 = random.randint(0, image_size[0])
             w0 = 0
 
@@ -105,9 +111,12 @@ def run_test(image, true_lines):
     radon_image, shift_step = dradon(image)
     lines = get_lines_from_radon_image(radon_image, shift_step)
 
-    # проверяю совпадает ли множество true_lines и lines посредством поочередного включения, если совпадают, то значи
-    # что алгоритм нашел все прямые и при этом не добавил ничего лишнего
-    assert all([isin_true_line_lines(true_line, lines, h, w) for true_line in true_lines])
+    # проверяю совпадает ли множество true_lines и lines посредством
+    # поочередного включения, если совпадают, то значит, что алгоритм нашел
+    # все прямые и при этом не добавил ничего лишнего
+    assert all(
+        [isin_true_line_lines(true_line, lines, h, w) for true_line in true_lines]
+    )
     assert all([isin_line_true_lines(line, true_lines, h, w) for line in lines])
 
 
@@ -118,7 +127,9 @@ image_sizes = [(30, 50), (40, 40), (50, 20), (50, 30)]
 @pytest.mark.parametrize("image_size", image_sizes)
 def test_dradon_horizontal(image_size):
     horizontal_lines = lines(image_size, num_lines, "horizontal")
-    selected_horizontal_lines = random.sample(horizontal_lines, random.randrange(num_lines))
+    selected_horizontal_lines = random.sample(
+        horizontal_lines, random.randrange(num_lines)
+    )
     image = create_image(image_size, selected_horizontal_lines)
     run_test(image, selected_horizontal_lines)
 

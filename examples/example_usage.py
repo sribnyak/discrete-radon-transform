@@ -1,5 +1,6 @@
 import cv2
-from dradon import dradon, get_lines_from_radon_image, draw_lines
+
+from dradon import dradon, draw_lines, get_lines_from_radon_image
 
 
 image = cv2.imread('geometry_test.png', cv2.IMREAD_GRAYSCALE)
