@@ -1,7 +1,9 @@
 import numpy as np
 import cv2
 import random
-from dradon import dradon, get_lines_from_radon_image, draw_lines
+from dradon import dradon, get_lines_from_radon_image
+
+import pytest
 
 # random.seed(42)
 
@@ -97,58 +99,40 @@ def lines(image_size, num_lines, type):
     return lines
 
 
-def test(image, true_lines, type):
+def run_test(image, true_lines):
     w, h = image.shape
-    print(f"testing {type} lines...")
     radon_image, shift_step = dradon(image)
     lines = get_lines_from_radon_image(radon_image, shift_step)
 
-    # cv2.imwrite(f'detected_{type}.png', draw_lines(image, lines))
-
     # проверяю совпадает ли множество true_lines и lines посредством поочередного включения, если совпадают, то значи
     # что алгоритм нашел все прямые и при этом не добавил ничего лишнего
-    for true_line in true_lines:
-        if not isin_true_line_lines(true_line, lines, h, w):
-            print('test failed')
-            for line in true_lines:
-                print(line)  # вывожу пары точек задающих прямые, чтобы можно было понять, где ломается алгоритм
-            return
-    for line in lines:
-        if not isin_line_true_lines(line, true_lines, h, w):
-            print('test failed')
-            for true_line in true_lines:
-                print(true_line)  # вывожу пары точек задающих прямые, чтобы можно было понять, где ломается алгоритм
-            return
-    print("test passed")
+    assert all([isin_true_line_lines(true_line, lines, h, w) for true_line in true_lines])
+    assert all([isin_line_true_lines(line, true_lines, h, w) for line in lines])
 
 
 num_lines = 5
+image_sizes = [(30, 50), (40, 40), (50, 20), (50, 30)]
 
-if __name__ == "__main__":
-    for i, image_size in enumerate([(30, 50), (40, 40), (50, 20), (50, 30)]):
-        print(f"testing for image_size = {image_size}...")
-        print("----------------------------------------------------------")
 
-        horizontal_lines = lines(image_size, num_lines, "horizontal")
-        selected_horizontal_lines = random.sample(horizontal_lines, random.randrange(num_lines))
-        image = create_image(image_size, selected_horizontal_lines)
-        # cv2.imwrite(f'horizontal_{i}.png', image)
-        test(image, selected_horizontal_lines, f"horizontal_{i}")
+@pytest.mark.parametrize("image_size", image_sizes)
+def test_dradon_horizontal(image_size):
+    horizontal_lines = lines(image_size, num_lines, "horizontal")
+    selected_horizontal_lines = random.sample(horizontal_lines, random.randrange(num_lines))
+    image = create_image(image_size, selected_horizontal_lines)
+    run_test(image, selected_horizontal_lines)
 
-        print("----------------------------------------------------------")
 
-        vertical_lines = lines(image_size, 5, "vertical")
-        selected_vertical_lines = random.sample(vertical_lines, random.randrange(num_lines))
-        image = create_image(image_size, selected_vertical_lines)
-        # cv2.imwrite(f'vertical_{i}.png', image)
-        test(image, selected_vertical_lines, f"vertical_{i}")
+@pytest.mark.parametrize("image_size", image_sizes)
+def test_dradon_vertical(image_size):
+    vertical_lines = lines(image_size, 5, "vertical")
+    selected_vertical_lines = random.sample(vertical_lines, random.randrange(num_lines))
+    image = create_image(image_size, selected_vertical_lines)
+    run_test(image, selected_vertical_lines)
 
-        print("----------------------------------------------------------")
 
-        diagonal_lines = lines(image_size, 5, "diagonal")
-        selected_diagonal_lines = random.sample(diagonal_lines, random.randrange(num_lines))
-        image = create_image(image_size, selected_diagonal_lines)
-        # cv2.imwrite(f'diagonal_{i}.png', image)
-        test(image, selected_diagonal_lines, f"diagonal_{i}")
-
-        print("----------------------------------------------------------")
+@pytest.mark.parametrize("image_size", image_sizes)
+def test_dradon_diagonal(image_size):
+    diagonal_lines = lines(image_size, 5, "diagonal")
+    selected_diagonal_lines = random.sample(diagonal_lines, random.randrange(num_lines))
+    image = create_image(image_size, selected_diagonal_lines)
+    run_test(image, selected_diagonal_lines)

@@ -1,6 +1,6 @@
 import click
 import cv2
-from .dradon import dradon, get_lines_from_radon_image, draw_lines
+from . import dradon, get_lines_from_radon_image, draw_lines
 from . import __version__
 
 
