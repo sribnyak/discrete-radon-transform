@@ -1,4 +1,4 @@
-"""Implementation of Discrete Radon Transform"""
+"""Implementation of Discrete Radon Transform."""
 
 from dataclasses import dataclass
 
@@ -42,7 +42,6 @@ class Line:
         Yields:
             Coordinates (i, j) of pixels.
         """
-
         if np.pi / 4 < self.angle < 3 * np.pi / 4:
             # iterate over x, compute y
             k = -1 / np.tan(self.angle)
@@ -94,7 +93,6 @@ def dradon(image, out_shape=None):
         TypeError: The function arguments are not instances of expected classes.
         ValueError: The input image is not 2-D or out_shape is not a tuple of 2 ints.
     """
-
     if not isinstance(image, np.ndarray):
         raise TypeError("image must be a numpy ndarray")
     if image.ndim != 2:
@@ -182,7 +180,7 @@ def get_lines_from_radon_image(radon_image, shift_step, threshold=0.8):
 
 
 def draw_lines(image, lines):
-    """Draw lines on a greyscale image
+    """Draw lines on a greyscale image.
 
     Takes a greyscale image, and draws lines with red colour.
 
@@ -197,7 +195,6 @@ def draw_lines(image, lines):
         TypeError: image is not a numpy ndarray.
         ValueError: image is not 2-D.
     """
-
     if not isinstance(image, np.ndarray):
         raise TypeError("image must be a numpy ndarray")
     if image.ndim != 2:

@@ -1,9 +1,10 @@
 # .flake8
 [flake8]
-select = B,B9,BLK,C,E,F,I,S,W
+select = B,B9,BLK,C,D,E,F,I,S,W
+docstring-convention = google
 max-complexity = 12
 max-line-length = 80
 ignore = E203,E501,W503
-per-file-ignores = tests/*:S101,S311
+per-file-ignores = tests/*:S101,S311,D
 application-import-names = dradon,tests
 import-order-style = google

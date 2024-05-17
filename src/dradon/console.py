@@ -1,4 +1,4 @@
-"""Command line interface for dradon"""
+"""Command line interface for dradon."""
 
 import click
 import cv2
@@ -14,7 +14,6 @@ from . import dradon, draw_lines, get_lines_from_radon_image
 @click.version_option(version=__version__)
 def main(radon_img, lines_img, image):
     """Detect lines on IMAGE and print their parameters to standard output."""
-
     image_cv2 = cv2.imread(image, cv2.IMREAD_GRAYSCALE)
 
     radon_img_cv2, shift_step = dradon(image_cv2)
