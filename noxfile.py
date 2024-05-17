@@ -14,6 +14,7 @@ def install_with_constraints(session, *args, **kwargs):
             "export",
             "--dev",
             "--format=constraints.txt",
+            "--without-hashes",
             f"--output={constraints.name}",
             external=True,
         )
@@ -45,9 +46,7 @@ def lint(session):
 def tests(session):
     args = session.posargs or ["--cov", "-m", "not e2e"]
     session.run("poetry", "install", "--no-dev", external=True)
-    install_with_constraints(
-        session, "coverage[toml]", "pytest", "pytest-cov", "pytest-mock"
-    )
+    install_with_constraints(session, "coverage[toml]", "pytest", "pytest-cov")
     session.run("pytest", *args)
 
 

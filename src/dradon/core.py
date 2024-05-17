@@ -1,3 +1,5 @@
+"""Implementation of Discrete Radon Transform"""
+
 from dataclasses import dataclass
 
 import numpy as np
@@ -5,14 +7,42 @@ import numpy as np
 
 @dataclass
 class Line:
+    """A straight line on the plane.
+
+    Attributes:
+        angle: the angle between the normal vector and x axis, in radians
+        shift: signed distance from the line to the origin
+
+    Equation: shift = x cos(angle) + y sin(angle)
+
+    When used for images of size (h, w), the following coordinates are used:
+    1) x = j - w // 2
+    2) y = h // 2 - i
+    """
+
     angle: float
     shift: float
 
-    # eq: shift = x cos(angle) + y sin(angle)
-    # x = j - w // 2
-    # y = h // 2 - i
-
     def points(self, h, w):
+        """Approximate the line with a set of pixel coordinates, yield them one by one.
+
+        If the line's orientation is closer to horisontal, iterates over x axis
+        and yields pixel (i, j) for each valid j.
+
+        If the line's orientation is closer to vertical, iterates over y axis
+        and yields pixel (i, j) for each valid i.
+
+        Can be used to approximate an integral over the line with a sum,
+        or for drawing the line.
+
+        Args:
+            h: Image height.
+            w: Image width.
+
+        Yields:
+            Coordinates (i, j) of pixels.
+        """
+
         if np.pi / 4 < self.angle < 3 * np.pi / 4:
             # iterate over x, compute y
             k = -1 / np.tan(self.angle)
@@ -36,6 +66,35 @@ class Line:
 
 
 def dradon(image, out_shape=None):
+    """Return a Discrete Radon Transform of an image.
+
+    Calculates the Discrete Radon Transform of image.
+
+    The result is an image `radon_image` of shape `(out_h, out_w)`,
+    such that `radon_image[a, s]` is equal to the sum of pixels along the line
+    `Line(a * angle_step, (s - out_w // 2) * shift_step)`, where
+    `angle_step` and `shift_step` are the sampling intervals for angle and shift.
+
+    Before returning, the resulted image is normalized to have values from 0 to 1.
+
+    As `shift_step` cannot be calculated using only the result image,
+    it is returned together with `radon_image`.
+
+    Args:
+        image: A one-channel image as a two-dimensinal numpy array.
+        out_shape: tuple `(out_h, out_w)` - the shape of the output, or None.
+            When set to None, the shape is defined automatically.
+            Specifically, both `out_h` and `out_w` will equal the image's diagonal.
+
+    Returns:
+        radon_image: the Discrete Radon Transform of image.
+        shift_step: the sampling interval for the line shift.
+
+    Raises:
+        TypeError: The function arguments are not instances of expected classes.
+        ValueError: The input image is not 2-D or out_shape is not a tuple of 2 ints.
+    """
+
     if not isinstance(image, np.ndarray):
         raise TypeError("image must be a numpy ndarray")
     if image.ndim != 2:
@@ -84,6 +143,27 @@ def dradon(image, out_shape=None):
 
 
 def get_lines_from_radon_image(radon_image, shift_step, threshold=0.8):
+    """Return a list of lines, found on an image by Radon transform.
+
+    If y is Discrete Radon Transform of image x, then bright pixels on y
+    represent lines on x.
+
+    This function takes y (together with shift_step, as returned by the dradon
+    function) and returns the lines given by the pixels of y brighter than threshold.
+
+    Args:
+        radon_image: a 2-D array, the Discrete Radon Transform of an image.
+        shift_step: the sampling interval for the line shift (see dradon function).
+        threshold: a minimum value for a pixel of radon_image to be considered
+            a line on the original image.
+
+    Returns:
+        A list of lines (instances of class Line).
+
+    Raises:
+        TypeError: radon_image is not a numpy ndarray.
+        ValueError: radon_image is not 2-D.
+    """
     if not isinstance(radon_image, np.ndarray):
         raise TypeError("radon_image must be a numpy ndarray")
     if radon_image.ndim != 2:
@@ -102,6 +182,22 @@ def get_lines_from_radon_image(radon_image, shift_step, threshold=0.8):
 
 
 def draw_lines(image, lines):
+    """Draw lines on a greyscale image
+
+    Takes a greyscale image, and draws lines with red colour.
+
+    Args:
+        image: a greyscale image, as a 2-D numpy array.
+        lines: a list of lines (instances of class Line).
+
+    Returns:
+        A 3-channel image with lines drawn on it.
+
+    Raises:
+        TypeError: image is not a numpy ndarray.
+        ValueError: image is not 2-D.
+    """
+
     if not isinstance(image, np.ndarray):
         raise TypeError("image must be a numpy ndarray")
     if image.ndim != 2:

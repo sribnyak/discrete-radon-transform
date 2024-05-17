@@ -1,3 +1,5 @@
+"""Command line interface for dradon"""
+
 import click
 import cv2
 
