@@ -16,8 +16,10 @@ class Line:
     Equation: shift = x cos(angle) + y sin(angle)
 
     When used for images of size (h, w), the following coordinates are used:
-    1) x = j - w // 2
-    2) y = h // 2 - i
+
+    x = j - w // 2
+
+    y = h // 2 - i
     """
 
     angle: float
@@ -28,7 +30,6 @@ class Line:
 
         If the line's orientation is closer to horisontal, iterates over x axis
         and yields pixel (i, j) for each valid j.
-
         If the line's orientation is closer to vertical, iterates over y axis
         and yields pixel (i, j) for each valid i.
 
@@ -86,8 +87,8 @@ def dradon(image, out_shape=None):
             Specifically, both `out_h` and `out_w` will equal the image's diagonal.
 
     Returns:
-        radon_image: the Discrete Radon Transform of image.
-        shift_step: the sampling interval for the line shift.
+        `radon_image` - the Discrete Radon Transform of image,
+        `shift_step` - the sampling interval for the line shift.
 
     Raises:
         TypeError: The function arguments are not instances of expected classes.

@@ -9,7 +9,7 @@ Can be used as a python module or a command line tool.
 Usage as a python module
 ------------------------
 
-See the example in `examples/example_usage.py </examples/example_usage.py>`_.
+See the example in `examples/example_usage.py <https://github.com/sribnyak/discrete-radon-transform/blob/master/examples/example_usage.py>`_.
 
 
 Command line interface
@@ -36,3 +36,11 @@ Dradon's usage looks like:
 .. option:: --help
 
    Display a short usage message and exit.
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+
+   license
+   reference
