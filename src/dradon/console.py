@@ -9,7 +9,9 @@ from . import dradon, draw_lines, get_lines_from_radon_image
 
 @click.command()
 @click.option("--radon_img", help="Save the radon image to file TEXT")
-@click.option("--lines_img", help="Save the original image with marked lines file TEXT")
+@click.option(
+    "--lines_img", help="Save the original image with marked lines to file TEXT"
+)
 @click.argument("image")
 @click.version_option(version=__version__)
 def main(radon_img, lines_img, image):

@@ -6,7 +6,7 @@ import nox
 
 
 nox.options.sessions = "lint", "tests", "safety"
-locations = "src", "tests", "./noxfile.py"
+locations = "src", "tests", "./noxfile.py", "docs/conf.py"
 
 
 def install_with_constraints(session, *args, **kwargs):
@@ -72,3 +72,10 @@ def safety(session):
         )
         install_with_constraints(session, "safety")
         session.run("safety", "check", f"--file={requirements.name}", "--full-report")
+
+
+@nox.session(python="3.9")
+def docs(session):
+    """Build the documentation."""
+    install_with_constraints(session, "sphinx")
+    session.run("sphinx-build", "docs", "docs/_build")

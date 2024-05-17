@@ -4,3 +4,4 @@ __pycache__/
 temp/
 /.coverage
 /.python-version
+/docs/_build/
