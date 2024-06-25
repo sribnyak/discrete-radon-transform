@@ -1,12 +1,20 @@
 # Discrete Radon Transform for Line Detection
 
+Реализация дискретной версии преобразования Радона для распознавания прямых на изображении.
+
+Используются инструменты poetry, nox, flake8, sphinx и пр., как в статье [Hypermodern Python](https://cjolowicz.github.io/posts/hypermodern-python-01-setup/)
+
+---
+
 Запуск скрипта: `poetry run dradon --radon_img temp/radon.png --lines_img temp/lines.png examples/geometry_test.png`
 
 Запуск тестов и пр. `nox -r`
 
-Запуск отдельной сессии `nox`: `nox -rs black`
+Запуск отдельной сессии `nox`: `nox -rs {session}`
 
-Run hooks: `pre-commit run --all-files`
+Запустить прекоммит-хуки: `pre-commit run --all-files`
+
+Обновить зависимость: `poetry update {module}`
 
 ---
 
